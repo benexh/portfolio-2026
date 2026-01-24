@@ -1,0 +1,36 @@
+---
+import { Image } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+
+interface Props {
+    description: string,
+    captionlabel: string,
+    video: string,
+    desc1: string,
+    poster?: ImageMetadata,
+}
+
+const { description, video, desc1, captionlabel, poster } = Astro.props
+---
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-x-5 py-5">
+    <div class="flex flex-col gap-1">
+        <div class="w-full aspect-square bg-black overflow-hidden">
+            <video 
+                autoplay
+                loop
+                muted
+                playsinline
+                class="w-full h-full object-cover"
+            >
+                <source src={video} type="video/webm" />
+                Your browser does not support the video tag
+            </video>
+        </div>
+        <p class="text-sm uppercase opacity-50">{desc1}</p>
+    </div>
+    <div class="flex flex-col gap-2 md:px-5">
+        <p class="text-sm uppercase opacity-50">{captionlabel}</p>
+        <p class="text-lg leading-normal max-w-lg whitespace-pre-line">{description}</p>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  description: string;
+  captionlabel: string;
+  image1?: ImageMetadata;
+  desc1: string;
+}
+
+const { description, image1, desc1, captionlabel } = Astro.props;
+---
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-x-5 py-5">
+    {image1 && (
+        <div class="flex flex-col gap-1">
+        <Image 
+            src={image1} 
+            alt={desc1}
+            class="w-full aspect-square object-cover"
+            widths={[800, 1200, 1600, 2000, 2400, 3000]}
+            sizes="(max-width: 768px) 100vw, 50vw"
+        />
+        <p class="text-sm uppercase opacity-50">{desc1}</p>
+    </div>
+    )}
+    
+
+    <div class="flex flex-col gap-2 md:px-5">
+        <p class="text-sm uppercase opacity-50">{captionlabel}</p>
+        <p class="text-lg leading-normal max-w-lg whitespace-pre-line">{description}</p>
+    </div>
+    
+</div>
