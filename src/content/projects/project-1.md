@@ -1,7 +1,7 @@
 ---
 order: 1
 image: /src/assets/images/projects/fmtm/fmtmcover.webp
-title: "From Mockup to Market (FMTM)"
+title: "From Mockup to Market"
 year: "2025 / 26"
 context: "University"
 collaborators: ["Kim Tuyen Truong, Angel Pfitzmann, Carla Burggraf, Leonidas Bothmer, Mavea Dongmo"]
