@@ -4,7 +4,7 @@ image: /src/assets/images/projects/fmtm/fmtmcover.webp
 title: "From Mockup to Market"
 year: "2025 / 26"
 context: "University"
-collaborators: ["Kim Tuyen Truong, Angel Pfitzmann, Carla Burggraf, Leonidas Bothmer, Mavea Dongmo"]
+collaborators: ["Kim Tuyen Truong, Angel Pfitzmann, Carla Burggraf, Leonidas Bothmer, Maeva Dongmo"]
 tools: ["Figma"]
 type: ["Product Design"]
 
