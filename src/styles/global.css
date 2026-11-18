@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+
+@font-face {
+  font-family: "Allo";
+  src: url("/fonts/AlloVariable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
     --div-color: #E7E7E7;
 } 
@@ -15,7 +24,7 @@
 }
 
 body {
-  font-family: theme("fontFamily.sans");
+  font-family: "Allo", sans-serif;
 }
 
 .text-nav {
