@@ -1,12 +1,19 @@
 ---
 const { label } = Astro.props;
+const { divCaption } = Astro.props;
 ---
 
-<div class="py-5">
+<!-- <div class="py-5">
     <div class="h-px w-full bg-(--div-color)"></div>
-</div>
+</div>> -->
 {label && (
-    <p class="text-xs md:text-sm uppercase sticky top-12 z-10 py-2">
+    <p class="text-xs md:text-sm font-semibold z-10 pt-2">
         {label}
+    </p>
+)}
+
+{divCaption && (
+    <p class="text-xs font-medium text-text-subdued z-10 py-1">
+        {divCaption}
     </p>
 )}

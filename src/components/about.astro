@@ -2,50 +2,64 @@
 import { Image } from "astro:assets";
 import portrait from "../assets/images/hero/PortraitBW.webp";
 import Divider from "./divider.astro";
+import smartbrokerLogo from "../assets/images/about/S+.webp"
+import fhpLogo from "../assets/images/about/FHPLogo.webp"
 ---
 
-<section class="relative px-5 pb-20">
+<section class="relative h-[75vh] flex flex-col justify-center mx-auto max-w-3xl px-5">
     <Divider 
-        label="About"
+        label="Experience"
     />
 
-    <div class="gap-5 grid grid-cols-1 md:grid-cols-3 md:gap-x-5 max-w-full py-26">
-        <div class="flex justify-end items-start">
+    <div class="flex justify-between border-b border-border-quite py-8">
+
+        <div class="flex items-center gap-4">
             <Image 
-                src={portrait}
-                alt="About Portrait" 
-                class="max-w-24.5 max-h-24.5 aspect-square object-cover"
-                sizes="(max-width: 768px) 100px, 150px"/>
+                src={smartbrokerLogo}
+                alt="Smartbroker+"
+                class="h-4 w-4 object-contain"
+            />
+            <p class="text-sm">SMARTBROKER+</p>
         </div>
+        
 
-        <div class="md:col-span-2">
-            <p class="text-lg max-w-xl leading-tight">I am a product design student at the University of Applied Sciences Potsdam, focused on creating modern, functional products that balance aesthetics and usability. My work spans digital interfaces and physical product design, from concept development to hands-on fabrication. I'm inspired by projects that merge interaction design with tangible experiences.</p>
+        <div class="w-1/2 flex flex-col">
+            <p class="text-sm">Product Design Internship / Working Student</p>
+            <p class="text-sm text-text-muted">Jun 2026 - Present</p>
         </div>
     </div>
 
-    <div class="gap-10 grid grid-cols-1 md:grid-cols-3 md:gap-x-5 max-w-full">
-        <div class="flex justify-start md:justify-center items-start">
-            <div class="flex flex-col gap-6">
-                <p class="text-sm font-normal uppercase opacity-50">Skills:</p>
-                <div class="flex flex-col gap-4">
-                    <p class="text-lg font-normal uppercase">Figma</p>
-                    <p class="text-lg font-normal uppercase">Fusion360</p>
-                    <p class="text-lg font-normal uppercase">Blender</p>
-                    <p class="text-lg font-normal uppercase">AdobeCC</p>
-                </div>
-            </div>
+    <div class="flex justify-between border-b border-border-quite py-8">
+        <div class="flex items-center gap-4">
+            <Image 
+                src={fhpLogo}
+                alt="Smartbroker+"
+                class="h-4 w-4 object-contain"
+            />
+            <p class="text-sm">Fachhochschule Potsdam+</p>
         </div>
 
-        <div class="md:col-span-2">
-            <div class="flex flex-col gap-6">
-                <p class="text-sm font-normal uppercase opacity-50">Education & Experience:</p>
-                <div class="flex flex-col gap-4">
-                    <p class="text-lg font-normal uppercase">Working Student @ Smartbroker+ (06/2026 - present)</p>
-                    <p class="text-lg font-normal uppercase">Bachelor of Arts @FH;P (2023-2027)</p>
-                    <p class="text-lg font-normal uppercase">Student Assistant for 3d-print @FH;P (2025-2026)</p>
-                </div>
-            </div>
+        <div class="w-1/2 flex flex-col">
+            <p class="text-sm">Student Assistant for 3D-Print</p>
+            <p class="text-sm text-text-muted">May 2025 - Jun 2026</p>
         </div>
     </div>
+
+    <div class="flex justify-between border-b border-border-quite py-8">
+        <div class="flex items-center gap-4">
+            <Image 
+                src={fhpLogo}
+                alt="Smartbroker+"
+                class="h-4 w-4 object-contain"
+            />
+            <p class="text-sm">Fachhochschule Potsdam+</p>
+        </div>
+
+        <div class="w-1/2 flex flex-col">
+            <p class="text-sm">Bachelor of Arts Interfacedesign</p>
+            <p class="text-sm text-text-muted">Oct 2023 - Present</p>
+        </div>
+    </div>
+
     
 </section>

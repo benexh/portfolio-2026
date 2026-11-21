@@ -7,9 +7,10 @@ const allProjects = await getCollection('projects');
 const projects = allProjects.sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
 ---
 
-<section id="projects" class="relative px-5 pb-6">
+<section id="projects" class="relative px-5 md:px-11 pb-6">
     <Divider 
-        label="Projects"
+        label="Projects @ SMARTBROKER+"
+        divCaption="Work that I created during my internship and work-study time at SMARTBROKER+, creating new ..."
     />
     
     <div class="grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-5 py-9">

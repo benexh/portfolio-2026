@@ -7,8 +7,8 @@ interface Props {
 const {projectTitle, pageTitle} = Astro.props; 
 ---
 
-<nav class="fixed bg-background top-0 left-0 z-50 w-full">
-    <div class="flex justify-between items-center px-11 py-5">
+<nav class="fixed bg-linear-to-b from-background to-transparent top-0 left-0 z-50 w-full">
+    <div class="flex justify-between items-center px-5 md:px-11 py-5">
         <a href="/" class="flex-1 text-left uppercase text-nav whitespace-nowrap">
             Benedikt Hofmann ©2026
         </a>
@@ -31,7 +31,7 @@ const {projectTitle, pageTitle} = Astro.props;
     const updateTime = () => {
         const currentTime = new Date().toLocaleTimeString('de-DE', {
             hour: '2-digit',
-            minute: '2-digit',
+            minute: '2-digit',  
             timeZone: 'Europe/Berlin'
         });
 

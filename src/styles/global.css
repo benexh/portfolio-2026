@@ -16,9 +16,13 @@
     --text-default: rgb(2 3 4 / 91%);
     --text-subdued: rgb(1 8 8 / 71%);
     --text-muted: rgb(2 14 15 / 62%);
-
+    --border-quite: rgb(28 46 48 / 5%);
+    --bg-card: #f7f7f7;
+  
 
     --div-color: #E7E7E7;
+
+    --gradient-color: #00ff99;
 } 
 
 @media (prefers-color-scheme: dark) {
@@ -29,6 +33,8 @@
       --text-default: rgb(254 254 254 / 89%);
       --text-subdued: rgb(250 253 254 / 80%);
       --text-muted: rgb(244 248 254 / 51%);
+      --border-quite: rgb(248 248 248 / 5%);
+      --bg-card: #101010;
     }
 }
 
@@ -39,6 +45,9 @@
   --color-text-subdued: var(--text-subdued);
   --color-text-muted: var(--text-muted);
   --color-divider: var(--div-color);
+  --color-gradient: var(--gradient-color);
+  --color-border-quite: var(--border-quite);
+  --color-background-card: var(--bg-card);
 }
 
 ::selection {
