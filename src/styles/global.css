@@ -10,8 +10,36 @@
 }
 
 :root {
+    color-scheme: light;
+
+    --bg-color: #FDFCFC;
+    --text-default: rgb(2 3 4 / 91%);
+    --text-subdued: rgb(1 8 8 / 71%);
+    --text-muted: rgb(2 14 15 / 62%);
+
+
     --div-color: #E7E7E7;
 } 
+
+@media (prefers-color-scheme: dark) {
+  :root {
+      color-scheme: dark;
+
+      --bg-color: #111111;
+      --text-default: rgb(254 254 254 / 89%);
+      --text-subdued: rgb(250 253 254 / 80%);
+      --text-muted: rgb(244 248 254 / 51%);
+    }
+}
+
+
+@theme inline {
+  --color-background: var(--bg-color);
+  --color-text-default: var(--text-default);
+  --color-text-subdued: var(--text-subdued);
+  --color-text-muted: var(--text-muted);
+  --color-divider: var(--div-color);
+}
 
 ::selection {
   background-color: blue;
@@ -25,9 +53,13 @@
 
 body {
   font-family: "Allo", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-default);
 }
 
 .text-nav {
-    @apply text-xs font-normal tracking-wide;
+    @apply text-xs;
+    font-weight: 500;
+    font-variation-settings: "wght" 500 "ROND" 100;
   }
   

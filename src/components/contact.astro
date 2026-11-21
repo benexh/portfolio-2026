@@ -2,10 +2,7 @@
 import Divider from "./divider.astro"
 ---
 
-<section class="relative h-screen px-5 flex flex-col">
-    <Divider 
-        label="Contact"
-    />
+<section class="relative h-screen px-5 flex flex-col overflow-hidden">
 
     <div class="flex flex-col justify-center flex-1 gap-10">
         <li class="list-none">
@@ -49,4 +46,9 @@ import Divider from "./divider.astro"
         </li>
        
     </div>
+
+    <p class="absolute -bottom-10 left-1/2 -translate-x-1/2 
+            text-[20rem] font-semibold leading-none whitespace-nowrap
+            bg-linear-to-t from-background/0 from-0% via-background/30 via-15% via-[#00FF99]/20 via-35% to-[#00FF99]/80
+            bg-clip-text text-transparent select-none">HOFMANN</p>
 </section>
