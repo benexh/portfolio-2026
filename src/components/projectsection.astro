@@ -16,7 +16,7 @@ const projects = allProjects.sort((a, b) => (a.data.order || 0) - (b.data.order 
     <div id="project-grid" class="grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-5 py-9">
         {projects.map((project) => (
             <ProjectCard 
-                slug={project.slug}
+                slug={project.id}
                 image={project.data.image}
                 title={project.data.title}
                 type={project.data.type[0]}
