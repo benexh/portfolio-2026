@@ -2,8 +2,9 @@
 import { Image } from "astro:assets";
 import portrait from "../assets/images/hero/PortraitBW.webp";
 import Divider from "./divider.astro";
-import smartbrokerLogo from "../assets/images/about/S+.webp"
-import fhpLogo from "../assets/images/about/FHPLogo.webp"
+import smartbrokerLogo from "../assets/images/about/S+logo2.webp"
+import fhpLogoDark from "../assets/images/about/FHPLogoDark.webp"
+import fhpLogoLight from "../assets/images/about/FHPLogoLight.webp"
 ---
 
 <section class="relative h-[75vh] flex flex-col justify-center mx-auto max-w-3xl px-5">
@@ -11,7 +12,7 @@ import fhpLogo from "../assets/images/about/FHPLogo.webp"
         label="Experience"
     />
 
-    <div class="flex justify-between border-b border-border-quite py-8">
+    <div class="flex justify-between items-start border-b border-border-quite py-8">
 
         <div class="flex items-center gap-4">
             <Image 
@@ -29,12 +30,18 @@ import fhpLogo from "../assets/images/about/FHPLogo.webp"
         </div>
     </div>
 
-    <div class="flex justify-between border-b border-border-quite py-8">
+    <div class="flex justify-between items-start border-b border-border-quite py-8">
         <div class="flex items-center gap-4">
             <Image 
-                src={fhpLogo}
-                alt="Smartbroker+"
-                class="h-4 w-4 object-contain"
+                src={fhpLogoLight}
+                alt="FHPLogo"
+                class="h-4 w-4 object-contain dark:hidden"
+            />
+
+            <Image
+                src={fhpLogoDark}
+                alt="FHPLogo"
+                class="hidden h-4 w-4 object-contain dark:block"
             />
             <p class="text-sm">Fachhochschule Potsdam+</p>
         </div>
@@ -45,12 +52,18 @@ import fhpLogo from "../assets/images/about/FHPLogo.webp"
         </div>
     </div>
 
-    <div class="flex justify-between border-b border-border-quite py-8">
+    <div class="flex justify-between border-b items-start border-border-quite py-8">
         <div class="flex items-center gap-4">
             <Image 
-                src={fhpLogo}
-                alt="Smartbroker+"
-                class="h-4 w-4 object-contain"
+                src={fhpLogoLight}
+                alt="FHPLogo"
+                class="h-4 w-4 object-contain dark:hidden"
+            />
+
+            <Image
+                src={fhpLogoDark}
+                alt="FHPLogo"
+                class="hidden h-4 w-4 object-contain dark:block"
             />
             <p class="text-sm">Fachhochschule Potsdam+</p>
         </div>
