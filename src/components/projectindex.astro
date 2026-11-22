@@ -1,77 +1,310 @@
 ---
-const { items = [] } = Astro.props;
+interface Chapter {
+  id: string;
+  title: string;
+}
+
+interface Props {
+  chapters: Chapter[];
+}
+
+const { chapters } = Astro.props;
+
+const TICK_COUNT = 81;
 ---
 
-<nav id="project-index" class="hidden lg:flex flex-col gap-2 fixed left-8 top-1/2 -translate-y-1/2 z-50">
-    
-    <a href="#introudction" class="index-link active">
-        <span class="index-line"></span>
-        <span class="index-label">Introduction</span>
-    </a>
+<div
+  id="project-progress"
+  data-ready="false"
+  data-top="true"
+  class="group/root pointer-events-none fixed left-5 top-1/2 z-50 hidden h-[80vh] w-[88px] -translate-y-1/2 lg:block"
+>
+  <nav aria-label="Project navigation" class="relative h-full w-full">
+    <!-- Hover zone: only the area near the ruler reacts to the pointer -->
+    <div
+      data-hover-zone
+      class="pointer-events-auto absolute inset-y-0 left-0 w-[88px]"
+      aria-hidden="true"
+    >
+    </div>
 
-    <a href="#introudction" class="index-link active">
-        <span class="index-line"></span>
-        <span class="index-label">Research</span>
-    </a>
+    <!-- Small ruler ticks -->
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+      {
+        Array.from({ length: TICK_COUNT }, (_, index) => (
+          <span
+            data-ruler-tick
+            class="absolute left-[35px] block h-[1px] -translate-y-1/2 bg-text-muted"
+            style={`top: ${(index / (TICK_COUNT - 1)) * 100}%; width: 8px;`}
+          />
+        ))
+      }
+    </div>
 
-    <a href="#introudction" class="index-link active">
-        <span class="index-line"></span>
-        <span class="index-label">Concept</span>
-    </a>
-    <a href="#introudction" class="index-link active">
-        <span class="index-line"></span>
-        <span class="index-label">Design</span>
-    </a>
-</nav>
+    <!-- Chapter markers -->
+    {
+      chapters.map((chapter, index) => (
+        <a
+          href={`#${chapter.id}`}
+          data-progress-item
+          data-section-id={chapter.id}
+          data-active="false"
+          class="group pointer-events-auto absolute left-0 flex h-6 w-[88px] -translate-y-1/2 items-center opacity-0 transition-opacity duration-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 group-data-[ready=true]/root:opacity-100"
+          style={`top: ${chapters.length > 1 ? (index / (chapters.length - 1)) * 100 : 50}%;`}
+        >
+          <span
+            class="absolute left-0 w-[28px] text-[12px] tabular-nums text-text-muted transition-colors duration-200 group-hover:text-text-default group-focus-visible:text-text-default group-data-[active=true]:text-text-default"
+          >
+            {String(index + 1).padStart(2, "0")}
+          </span>
 
+          <span
+            class="absolute left-[35px] h-[2px] w-[30px] bg-text-subdued [transition:background-color_200ms_ease,width_250ms_cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none group-hover:bg-text-default group-focus-visible:bg-text-default group-data-[active=true]:w-[36px] group-data-[active=true]:bg-text-default"
+          />
 
-<style>
-    #project-index {
-        color: var(--color-border-quite);
+          <span
+            class="pointer-events-none absolute left-[88px] whitespace-nowrap text-xs text-text-muted opacity-0 will-change-[opacity] [transition:color_200ms_ease,opacity_450ms_cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none group-hover:text-text-default group-focus-visible:text-text-default group-data-[active=true]:text-text-default group-data-[top=true]/root:pointer-events-auto group-data-[top=true]/root:opacity-100 group-hover/root:pointer-events-auto group-hover/root:opacity-100 group-focus-within/root:pointer-events-auto group-focus-within/root:opacity-100"
+          >
+            {chapter.title}
+          </span>
+        </a>
+      ))
+    }
+  </nav>
+</div>
+
+<script>
+  const MIN_W = 8;
+  const MAX_W = 30;
+  const SIGMA = 0.035;
+  const ITEM_HEIGHT = 24; // matches h-6, used as the minimum gap between chapters
+  const ACTIVE_LINE = 0.4; // chapter is active once its section passes 40% of the viewport
+  const HOVER_ZONE = 88; // px from the left edge where the ruler reacts (matches w-[88px])
+  const TOP_THRESHOLD = 50; // px scrolled before labels hide
+
+  const clamp = (v: number, min: number, max: number) =>
+    Math.min(max, Math.max(min, v));
+
+  function initProjectProgress() {
+    const root = document.querySelector<HTMLElement>("#project-progress");
+    if (!root) return;
+
+    const ticks = [
+      ...root.querySelectorAll<HTMLElement>("[data-ruler-tick]"),
+    ];
+
+    const chapters = [
+      ...root.querySelectorAll<HTMLAnchorElement>("[data-progress-item]"),
+    ]
+      .map((item) => ({
+        item,
+        section: document.getElementById(item.dataset.sectionId ?? ""),
+      }))
+      .filter(
+        (c): c is { item: HTMLAnchorElement; section: HTMLElement } =>
+          c.section instanceof HTMLElement
+      );
+
+    if (!ticks.length || !chapters.length) return;
+
+    const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+
+    let scrollProgress = 0;
+    let hoverProgress: number | null = null;
+    let sectionTops: number[] = [];
+    let scrollable = 0;
+    let rafId = 0;
+
+    // Layout-dependent: runs on resize and when the page height changes.
+    function measure() {
+      scrollable = document.documentElement.scrollHeight - innerHeight;
+      sectionTops = chapters.map(
+        ({ section }) => section.getBoundingClientRect().top + scrollY
+      );
+
+      // Position chapters proportionally, then enforce a minimum gap so
+      // labels never overlap when sections are close together.
+      const height = root!.clientHeight;
+      const positions = sectionTops.map((top) =>
+        scrollable > 0 ? clamp(top / scrollable, 0, 1) * height : 0
+      );
+
+      for (let i = 1; i < positions.length; i++) {
+        positions[i] = Math.max(positions[i], positions[i - 1] + ITEM_HEIGHT);
+      }
+      for (let i = positions.length - 1; i >= 0; i--) {
+        const max = height - (positions.length - 1 - i) * ITEM_HEIGHT;
+        positions[i] = Math.min(positions[i], max);
+      }
+
+      chapters.forEach(({ item }, i) => {
+        item.style.top = `${positions[i]}px`;
+      });
+
+      root!.dataset.ready = "true";
+      update();
     }
 
-    .index-link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: fit-content;
-    height: 12px;
-    cursor: pointer;
-    text-decoration: none;
+    // Scroll-dependent: no layout reads besides scrollY.
+    function update() {
+      // Labels are only shown at the top of the page (CSS reads this).
+      root!.dataset.top = String(scrollY < TOP_THRESHOLD);
+
+      scrollProgress = scrollable > 0 ? clamp(scrollY / scrollable, 0, 1) : 0;
+
+      let current = 0;
+      for (let i = 0; i < sectionTops.length; i++) {
+        if (sectionTops[i] - scrollY <= innerHeight * ACTIVE_LINE) current = i;
+      }
+
+      chapters.forEach(({ item }, i) => {
+        const active = i === current;
+        item.dataset.active = String(active);
+        if (active) item.setAttribute("aria-current", "location");
+        else item.removeAttribute("aria-current");
+      });
+
+      renderTicks();
+    }
+
+    function renderTicks() {
+      const p = hoverProgress ?? scrollProgress;
+      const last = ticks.length - 1;
+
+      ticks.forEach((tick, i) => {
+        const d = i / last - p;
+        const g = Math.exp(-(d * d) / (2 * SIGMA * SIGMA));
+        tick.style.width = `${MIN_W + (MAX_W - MIN_W) * g}px`;
+      });
+    }
+
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        update();
+      });
+    };
+
+    // Only react when the pointer is close to the ruler.
+    const onPointerMove = (e: PointerEvent) => {
+      const rect = root.getBoundingClientRect();
+
+      if (e.clientX - rect.left > HOVER_ZONE) {
+        if (hoverProgress !== null) {
+          hoverProgress = null;
+          renderTicks();
+        }
+        return;
+      }
+
+      hoverProgress = clamp((e.clientY - rect.top) / rect.height, 0, 1);
+      renderTicks();
+    };
+
+    const onPointerLeave = () => {
+      hoverProgress = null;
+      renderTicks();
+    };
+
+    // Keyboard focus drives the ruler magnification too.
+    const onFocusIn = (e: FocusEvent) => {
+      const link = (e.target as Element).closest<HTMLElement>(
+        "[data-progress-item]"
+      );
+      if (!link || !link.matches(":focus-visible")) return;
+      const rect = root.getBoundingClientRect();
+      const linkRect = link.getBoundingClientRect();
+      hoverProgress = clamp(
+        (linkRect.top + linkRect.height / 2 - rect.top) / rect.height,
+        0,
+        1
+      );
+      renderTicks();
+    };
+
+    const onFocusOut = () => {
+      hoverProgress = null;
+      renderTicks();
+    };
+
+    // Smooth-scroll without adding a history entry.
+    const onClick = (e: MouseEvent) => {
+      const link = (e.target as Element).closest<HTMLAnchorElement>(
+        "[data-progress-item]"
+      );
+      if (!link || !root.contains(link)) return;
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
+        return;
+      }
+
+      const section = document.getElementById(link.dataset.sectionId ?? "");
+      if (!section) return;
+
+      e.preventDefault();
+      history.replaceState(history.state, "", link.getAttribute("href"));
+      section.scrollIntoView({
+        behavior: reduceMotion.matches ? "auto" : "smooth",
+        block: "start",
+      });
+    };
+
+    // Re-measure when document height changes (images, fonts, accordions).
+    const resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(document.body);
+
+    root.addEventListener("pointermove", onPointerMove);
+    root.addEventListener("pointerleave", onPointerLeave);
+    root.addEventListener("focusin", onFocusIn);
+    root.addEventListener("focusout", onFocusOut);
+    root.addEventListener("click", onClick);
+    addEventListener("scroll", onScroll, { passive: true });
+
+    measure();
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      resizeObserver.disconnect();
+      root.removeEventListener("pointermove", onPointerMove);
+      root.removeEventListener("pointerleave", onPointerLeave);
+      root.removeEventListener("focusin", onFocusIn);
+      root.removeEventListener("focusout", onFocusOut);
+      root.removeEventListener("click", onClick);
+      removeEventListener("scroll", onScroll);
+    };
   }
 
-  .index-line {
-    display: block;
-    width: 8px;
-    height: 1px;
-    flex-shrink: 0;
-    background: currentColor;
-    opacity: 0.35;
-    transform-origin: left center;
-    transition:
-      width 300ms ease,
-      opacity 300ms ease;
+  // Keep in sync with Tailwind's `lg` breakpoint (1024px) used in the markup.
+  const desktop = matchMedia("(min-width: 1024px)");
+
+  let cleanup: (() => void) | undefined;
+  let currentRoot: Element | null = null;
+
+  function teardown() {
+    cleanup?.();
+    cleanup = undefined;
+    currentRoot = null;
   }
 
-  .index-label {
-    font-size: 11px;
-    white-space: nowrap;
-    opacity: 0;
-    transform: translateX(-4px);
-    transition:
-      opacity 250ms ease,
-      transform 250ms ease;
+  // Safe to call repeatedly: only runs on desktop, and skips if already
+  // initialized for this DOM node.
+  function setup() {
+    if (!desktop.matches) {
+      teardown();
+      return;
+    }
+
+    const root = document.querySelector("#project-progress");
+    if (root && root === currentRoot) return;
+
+    cleanup?.();
+    cleanup = initProjectProgress();
+    currentRoot = root;
   }
 
-  .index-link:hover .index-line,
-  .index-link.active .index-line {
-    width: 24px;
-    opacity: 1;
-  }
+  desktop.addEventListener("change", setup);
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", teardown);
 
-  #project-index:hover .index-label {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-</style>
+  setup();
+</script>

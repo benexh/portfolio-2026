@@ -1,5 +1,15 @@
+
 ---
 import type { ImageMetadata } from 'astro';
+
+import Divider from './divider.astro';
+import Imgtextrow from './imgtextrow.astro';
+import Textrow from './textrow.astro';
+import Imgimgrow from './imgimgrow.astro';
+import Wideimgrow from './wideimgrow.astro';
+import Widevidrow from './widevidrow.astro';
+import Vidtextrow from './vidtextrow.astro';
+import ProjectProgress from './projectindex.astro';
 
 interface ContentBlock {
     type: 'imageText' | 'imageRow' | 'wideImage' | 'divider' | 'video' | 'videoText';
@@ -19,105 +29,149 @@ interface ContentBlock {
 }
 
 interface Props {
-  description: string;
+    description: string;
 
-  firstBlock: {
-    image: ImageMetadata;
-    caption: string;
-  };
+    firstBlock: {
+        image: ImageMetadata;
+        caption: string;
+    };
 
-  contentBlocks?: ContentBlock[];
-
-  insights?: string;
-  
+    contentBlocks?: ContentBlock[];
+    insights?: string;
 }
 
-const { description, insights, firstBlock, contentBlocks} = Astro.props;
-import Divider from './divider.astro';
-import Imgtextrow from './imgtextrow.astro';
-import Textrow from './textrow.astro';
-import Imgimgrow from './imgimgrow.astro';
-import Wideimgrow from './wideimgrow.astro';
-import Widevidrow from './widevidrow.astro';
-import Vidtextrow from './vidtextrow.astro';
+const { description, insights, firstBlock, contentBlocks } = Astro.props;
+
+
+function getChapterTitle(block: ContentBlock, index: number) {
+    const title =
+        block.captionlabel ||
+        block.desc ||
+        block.desc1 ||
+        block.desc2 ||
+        block.description ||
+        `Chapter ${index + 1}`;
+
+    return title.length > 30
+        ? title.slice(0, 27).trim() + '...'
+        : title;
+}
+
+const chapters = [
+    {
+        id: 'project-summary',
+        title: 'Summary',
+    },
+
+    {
+        id: 'project-design',
+        title: 'Design',
+    },
+
+    ...(insights
+        ? [{
+            id: 'project-insights',
+            title: 'Insights',
+        }]
+        : []),
+];
 ---
 
 <section class="relative px-5">
+
+    <ProjectProgress chapters={chapters} />
+
     <Divider />
+
+    <!-- Project Summary -->
+    <section id="project-summary" class="scroll-mt-24">
+        <Imgtextrow
+            description={description}
+            image1={firstBlock.image}
+            captionlabel="Project Summary"
+            desc1={firstBlock.caption}
+        />
+    </section>
+
+    <Divider />
+
+    <!-- Dynamic Content Blocks -->
+
+    <section id="project-design" class="scroll-mt-24">
+
     
-    <Imgtextrow 
-        description={description}
-        image1={firstBlock.image}
-        captionlabel="Project Summary"
-        desc1={firstBlock.caption}
-    />
-
-    <Divider />
-
-    {contentBlocks?.map((block) => (
+    {contentBlocks?.map((block, index) => (
         <>
-            {block.type === 'imageText' && (
-                <Imgtextrow
-                    description={block.description || ''}
-                    captionlabel={block.captionlabel || ''}
-                    image1={block.image}
-                    desc1={block.caption || ''}
-                />
-            )}
-
-            {block.type === 'imageRow' && (
-                <Imgimgrow
-                    image1={block.image1}
-                    desc1={block.desc1 || ''}
-                    image2={block.image2}
-                    desc2={block.desc2 || ''}
-                />
-            )}
-
-            {block.type === 'wideImage' && (
-                <Wideimgrow 
-                    image={block.image}
-                    desc={block.desc || ''}
-                />
-            )}
-
-            {block.type === 'divider' && (
+            {block.type === 'divider' ? (
                 <Divider label={block.label} />
-            )}
+            ) : (
+                <section
+                    id={`chapter-${index}`}
+                    class="scroll-mt-24"
+                >
+                    {block.type === 'imageText' && (
+                        <Imgtextrow
+                            description={block.description || ''}
+                            captionlabel={block.captionlabel || ''}
+                            image1={block.image}
+                            desc1={block.caption || ''}
+                        />
+                    )}
 
-            {block.type === 'video' && (
-                <Widevidrow 
-                    videoId={block.videoId || ''}
-                    desc={block.desc || ''}
-                />
-            )}
+                    {block.type === 'imageRow' && (
+                        <Imgimgrow
+                            image1={block.image1}
+                            desc1={block.desc1 || ''}
+                            image2={block.image2}
+                            desc2={block.desc2 || ''}
+                        />
+                    )}
 
-            {block.type === 'videoText' && (
-                <Vidtextrow
-                    description={block.description || ''}
-                    captionlabel={block.captionlabel || ''}
-                    video={block.video || ''}
-                    desc1={block.desc1 || ''}
-                    poster={block.poster}
-                />
+                    {block.type === 'wideImage' && (
+                        <Wideimgrow
+                            image={block.image}
+                            desc={block.desc || ''}
+                        />
+                    )}
+
+                    {block.type === 'video' && (
+                        <Widevidrow
+                            videoId={block.videoId || ''}
+                            desc={block.desc || ''}
+                        />
+                    )}
+
+                    {block.type === 'videoText' && (
+                        <Vidtextrow
+                            description={block.description || ''}
+                            captionlabel={block.captionlabel || ''}
+                            video={block.video || ''}
+                            desc1={block.desc1 || ''}
+                            poster={block.poster}
+                        />
+                    )}
+                </section>
             )}
         </>
     ))}
 
+</section>
+
+    <!-- Insights -->
     {insights && (
-        <Textrow
-            insights={insights}
-        />
+        <section
+            id="project-insights"
+            class="scroll-mt-24"
+        >
+            <Textrow insights={insights} />
+        </section>
     )}
 
-
+    <!-- Back to Projects -->
     <div class="pb-28">
         <a href="/#projects">
-            <Divider 
-                label="← Back to projects"
-            />
+            <Divider label="← Back to projects" />
         </a>
-        
     </div>
-    
+
 </section>

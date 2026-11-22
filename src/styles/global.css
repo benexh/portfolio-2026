@@ -72,18 +72,20 @@ body {
     font-variation-settings: "wght" 500 "ROND" 100;
   }
   
-
-  ::view-transition-group(*) {
+html {
+  scroll-behavior: smooth;
+}
+/*  ::view-transition-group(*) {
     animation-duration: 1200ms;
     animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-}
+}*/
 
 
 /* Keep the selected project image above other elements */
-::view-transition-group(*) {
+/*::view-transition-group(*) {
   z-index: 1;
 }
 
 ::view-transition-group(root) {
   z-index: 0;
-}
+}*/
