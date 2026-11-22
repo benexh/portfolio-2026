@@ -2,7 +2,7 @@
 const { label, content } = Astro.props;
 ---
 
-<div class="md:flex flex-col gap-1">
-    <p class="uppercase opacity-50 text-sm">{label}</p>
+<div class="flex flex-row justify-between gap-1 border-b border-border-quite py-2">
+    <p class="text-sm text-text-muted">{label}</p>
     <p class="text-sm max-w-3xs">{content}</p>
 </div>

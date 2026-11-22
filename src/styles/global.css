@@ -72,3 +72,8 @@ body {
     font-variation-settings: "wght" 500 "ROND" 100;
   }
   
+
+  ::view-transition-group(*) {
+    animation-duration: 900ms;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}

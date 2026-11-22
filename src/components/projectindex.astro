@@ -1,0 +1,77 @@
+---
+const { items = [] } = Astro.props;
+---
+
+<nav id="project-index" class="hidden lg:flex flex-col gap-2 fixed left-8 top-1/2 -translate-y-1/2 z-50">
+    
+    <a href="#introudction" class="index-link active">
+        <span class="index-line"></span>
+        <span class="index-label">Introduction</span>
+    </a>
+
+    <a href="#introudction" class="index-link active">
+        <span class="index-line"></span>
+        <span class="index-label">Research</span>
+    </a>
+
+    <a href="#introudction" class="index-link active">
+        <span class="index-line"></span>
+        <span class="index-label">Concept</span>
+    </a>
+    <a href="#introudction" class="index-link active">
+        <span class="index-line"></span>
+        <span class="index-label">Design</span>
+    </a>
+</nav>
+
+
+<style>
+    #project-index {
+        color: var(--color-border-quite);
+    }
+
+    .index-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: fit-content;
+    height: 12px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .index-line {
+    display: block;
+    width: 8px;
+    height: 1px;
+    flex-shrink: 0;
+    background: currentColor;
+    opacity: 0.35;
+    transform-origin: left center;
+    transition:
+      width 300ms ease,
+      opacity 300ms ease;
+  }
+
+  .index-label {
+    font-size: 11px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition:
+      opacity 250ms ease,
+      transform 250ms ease;
+  }
+
+  .index-link:hover .index-line,
+  .index-link.active .index-line {
+    width: 24px;
+    opacity: 1;
+  }
+
+  #project-index:hover .index-label {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+</style>

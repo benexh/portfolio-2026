@@ -14,6 +14,7 @@ export async function getStaticPaths() {
 const { project }: { project: CollectionEntry<'projects'> } = Astro.props;
 const { Content } = await project.render();
 const { title, description, image, type, tools, context, year, collaborators, insights, firstBlock, contentBlocks } = project.data;
+const { slug } = project;
 
 import ProjectHero from '../../components/projecthero.astro'
 import ProjectContent from '../../components/projectcontent.astro';
@@ -30,6 +31,7 @@ import ProjectContent from '../../components/projectcontent.astro';
         collaborators={collaborators}
         type={type}
         tools={tools}
+        slug={slug}
     />
 
 

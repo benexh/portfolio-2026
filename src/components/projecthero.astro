@@ -11,36 +11,29 @@ interface Props {
   collaborators: string[];
   type: string[];
   tools: string[];
+  slug: string;
 }
 
-const { image, title, description, context, year, collaborators, type, tools } = Astro.props;
+const { image, title, description, context, year, collaborators, type, tools, slug } = Astro.props;
 
 import ProjectInfo from '../components/projectinfo.astro';
 ---
 
 <section class="w-full min-h-screen">
-    <div class="w-full aspect-square md:aspect-1512/650">
-        <Image 
-          src={image}
-          alt=""
-          class="w-full h-full object-cover"
-          loading={'eager'}
-          fetchpriority={'high'}
-          widths={[800, 1200, 1600, 2000, 2400, 3000]}
-          sizes="100vw"
-        />
-    </div>
+    
 
-    <div class="flex flex-col px-5 gap-10 pt-8 md:pt-16">
-        <div>
-            <h1 class="text-2xl md:text-5xl uppercase font-normal">{title}</h1>
+    <div class="flex flex-col px-5 gap-10 mt-16 md:pt-16 mx-auto max-w-3xl pb-12">
+        <div class="flex flex-row justify-between items-center">
+            <h1 class="text-base md:text-2xl font-medium">{title}</h1>
+
+            <p class="text-base font-medium">{year}</p>
         </div>
 
-        <div class="flex flex-col gap-5 md:flex-row flex-wrap md:gap-36 max-w-6xl">
-            <ProjectInfo 
+        <div class="flex flex-col gap-5 md:gap-4 max-w-6xl">
+            <!--<ProjectInfo 
                 label="Year"
                 content={year}
-            />
+            />  -->
 
             <ProjectInfo 
                 label="Context"
@@ -52,10 +45,12 @@ import ProjectInfo from '../components/projectinfo.astro';
                 content={collaborators}
             />
 
-            <ProjectInfo 
+            <!-- 
+                <ProjectInfo 
                 label="Tools"
                 content={tools}
             />
+            -->
 
             <ProjectInfo 
                 label="Area"
@@ -63,4 +58,18 @@ import ProjectInfo from '../components/projectinfo.astro';
             />
         </div>
     </div>
+
+    <div class="w-full aspect-square md:aspect-1512/650 justify-center flex mx-auto">
+        <Image 
+          src={image}
+          alt=""
+          transition:name={`project-image-${slug}`}
+          class="w-3/4 h-full object-cover rounded-lg"
+          loading={'eager'}
+          fetchpriority={'high'}
+          widths={[800, 1200, 1600, 2000, 2400, 3000]}
+          sizes="100vw"
+        />
+    </div>
+
 </section>
